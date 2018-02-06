@@ -1,16 +1,19 @@
 #include<stdio.h>
 #include<math.h>
 
+char* encode(char message[], int msgLength);
+int getBlockLength(int msgLength);
+void getCheckbitPosition(int *checkbitPosition, int checkbitLength);
 
 char* encode(char message[], int msgLength){
 	//计算块的大小
 	int blockLength = getBlockLength(msgLength);
 	//计算纠错位的长度
 	int checkbitLength = blockLength - msgLength;
-        //
-        int checkbitPosition[checkbitLength];
- 	getCheckbitPosition(checkbitPosition, checkbitLength);
-        for(int i = 0; i < checkbitLength; i++){
+	//初始化纠错位的位置
+	int checkbitPosition[checkbitLength];
+	getCheckbitPosition(checkbitPosition, checkbitLength);
+	for(int i = 0; i < checkbitLength; i++){
 		printf("%d ", checkbitPosition[i]);
 	}
 	printf("\n");
@@ -29,8 +32,8 @@ int getBlockLength(int msgLength){
 	return 0;
 }
 
-void getCheckbitPosition(int* checkbitPosition, int checkbitLength){
-        for(int i = 0; i < checkbitLength; i++){
+void getCheckbitPosition(int *checkbitPosition, int checkbitLength){
+	for(int i = 0; i < checkbitLength; i++){
 		checkbitPosition[i] = (int) pow(2, i);
 	}
 }
