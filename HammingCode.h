@@ -4,9 +4,10 @@
 
 #define chartonumber(x) (x-'0')
 #define MAX 1000000
-#define TEST 1
+#define TEST 0
 
 char* encode(char message[], int msgLength);
+char* decode(char block[], int blockLength);
 int getBlockLength(int msgLength);
 void getCheckbitPosition(int *checkbitPosition, int checkbitLength);
 
@@ -134,9 +135,10 @@ char* encode(char message[], int msgLength){
 	}
 }
 
-// char* decode(char block[], int blockLength){
-// 	return null;
-// }
+char* decode(char block[], int blockLength){
+
+	return NULL;
+}
 
 int getBlockLength(int msgLength){
 	for (int i = 2; i < MAX; ++i){
