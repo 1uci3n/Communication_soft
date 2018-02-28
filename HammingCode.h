@@ -136,7 +136,11 @@ char* encode(char message[], int msgLength){
 }
 
 char* decode(char block[], int blockLength){
-
+	//计算纠错位位数
+	//判断错位位置
+	//计算新纠错位数值
+	//判断纠错
+	//去除纠错位解码
 	return NULL;
 }
 
