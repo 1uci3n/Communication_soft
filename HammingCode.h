@@ -6,14 +6,51 @@
 #define MAX 1000000
 #define TEST 0
 
+/**
+ * 汉明码编码
+ * 
+ * @param  message   源消息(字符数组)
+ * @param  msgLength 消息长度
+ * @return           返回编码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ */
 char* encode(char message[], int msgLength);
+
+/**
+ * 汉明码解码
+ * 
+ * @param  block       需要解码的块(字符数组)
+ * @param  blockLength 块的长度
+ * @return             返回解码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ */
 char* decode(char block[], int blockLength);
-int getBlockLength(int msgLength);
-void getCheckbitPosition(int *checkbitPosition, int checkbitLength);
+
+/**
+ * 根据消息长度计算目标块大小
+ * 
+ * @param  msgLength 原消息大小
+ * @return           返回目标块大小
+ */
+int getBlockLengthByMsgLength(int msgLength);
+
+/**
+ * 根据纠错位位数计算纠错位位置
+ * 
+ * @param checkbitPosition 用来保存纠错位的数组
+ * @param checkbitLength   纠错位位数
+ */
+void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLength);
+
+/**
+ * 根据块大小计算纠错位位数
+ * 
+ * @param  blockLength 块长度
+ * @return             返回纠错位位数
+ */
+int getCheckbitLengthByBlockLength(int blockLength);
 
 char* encode(char message[], int msgLength){
 	//计算块的大小
-	int blockLength = getBlockLength(msgLength);
+	int blockLength = getBlockLengthByMsgLength(msgLength);
 	//块大小的调试信息
 	if (TEST == 1){
 		printf("%d\n", blockLength);
@@ -22,7 +59,7 @@ char* encode(char message[], int msgLength){
 	int checkbitLength = blockLength - msgLength;
 	//初始化纠错位的位置
 	int checkbitPosition[checkbitLength];
-	getCheckbitPosition(checkbitPosition, checkbitLength);
+	getCheckbitPositionByCheckbitLength(checkbitPosition, checkbitLength);
 	//纠错位位置的调试信息
 	if (TEST == 1){
 		for (int i = 0; i < checkbitLength; i++){
@@ -123,9 +160,12 @@ char* encode(char message[], int msgLength){
 		}
 	}
 	//临时编码块纠错位置标记的调试信息
-	printf("%s\n", tempBlock);
+	if (TEST == 1)
+	{
+		printf("%s\n", tempBlock);
+	}
 	char *block = NULL;
-		//生成最终的编码块并返回
+	//生成最终的编码块并返回
 	block = (char *) malloc(blockLength * sizeof(char));
 	if (block != NULL){
 		snprintf(block, sizeof(tempBlock) + 1, tempBlock);
@@ -137,14 +177,68 @@ char* encode(char message[], int msgLength){
 
 char* decode(char block[], int blockLength){
 	//计算纠错位位数
-	//判断错位位置
-	//计算新纠错位数值
+	int checkbitLength = getCheckbitLengthByBlockLength(blockLength);
+	//计算纠错位位置
+	int checkbitPosition[checkbitLength];
+	getCheckbitPositionByCheckbitLength(checkbitPosition, checkbitLength);
+	//进行纠错校验
+	//每组校验的结果数组
+	int result[checkbitLength];
+	//最终结果的储存器
+	int target;
+	//连续计数器
+	int count = 0;
+	for (int i = 0; i < checkbitLength; ++i)
+	{
+		for (int j = i; j < blockLength; ++j)
+		{
+			result[i] += chartonumber(block[i]);
+			//连续计数器计数
+			count ++;
+			if (count >= checkbitPosition[i] + 1){
+				//当连续计数器数值大于等于纠错位的位置加一，j“指针”需要跳到下一段连续数据
+				j= j + checkbitPosition[i] + 1;
+				//将连续计数器重置为零
+				count = 0;
+			}
+		}
+		target += (result[i] % 2) * pow(2, i);
+	}
 	//判断纠错
+	if (target != -1){
+		//发生错误,进行纠错
+		if (block[target] == '1'){
+			block[target] = '0';
+		} else {
+			block[target] = '1';
+		}
+	}
 	//去除纠错位解码
-	return NULL;
+	char tempMsg[blockLength - checkbitLength];
+	int checkIndex = 0;
+	int msgIndex = 0;
+	for (int i = 0; i < blockLength; ++i)
+	{
+		if (i != checkbitPosition[checkIndex])
+		{
+			tempMsg[msgIndex] = block[i];
+			msgIndex++;
+		} else {
+			checkIndex++;
+		}
+	}
+	//生成最终的编码块并返回
+	char *msg = NULL;
+	msg = (char *) malloc((blockLength - checkbitLength) * sizeof(char));
+	if (msg != NULL){
+		snprintf(msg, sizeof(tempMsg) + 1, tempMsg);
+		return msg;
+	} else {
+		return NULL;
+	}
 }
 
-int getBlockLength(int msgLength){
+int getBlockLengthByMsgLength(int msgLength){
 	for (int i = 2; i < MAX; ++i){
 		if(pow(2,i) >= i + msgLength + 1){
 			return i + msgLength;
@@ -153,8 +247,18 @@ int getBlockLength(int msgLength){
 	return 0;
 }
 
-void getCheckbitPosition(int *checkbitPosition, int checkbitLength){
-	for (int i = 0; i < checkbitLength; i++){
+void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLength){
+	for (int i = 0; i < checkbitLength; ++i){
 		checkbitPosition[i] = (int) pow(2, i) - 1;
 	}
+}
+
+int getCheckbitLengthByBlockLength(int blockLength){
+	for (int i = 1; i <= blockLength; ++i)
+	{
+		if(pow(2, i) >= blockLength + 1){
+			return i;
+		}
+	}
+	return 0;
 }
