@@ -1,13 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include<vector>
 
 #define chartonumber(x) (x-'0')
 #define MAX 1000000
 #define TEST 0
+#define SIGNAL_ZERO -1
+#define SIGNAL_ONE 1
 
-using namespace std;
 
 /**
  * 汉明码编码
@@ -16,7 +16,7 @@ using namespace std;
  * @param  msgLength 消息长度
  * @return           返回编码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
  */
-char* encode(char message[], int msgLength);
+vector<int> encode(vector<int> message, int msgLength);
 
 /**
  * 汉明码解码
@@ -25,7 +25,16 @@ char* encode(char message[], int msgLength);
  * @param  blockLength 块的长度
  * @return             返回解码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
  */
-char* decode(char block[], int blockLength);
+vector<int> decode(vector<int> block, int blockLength);
+
+/**
+ * 汉明码解码(硬解码)
+ * 
+ * @param  block       需要解码的块(字符数组)
+ * @param  blockLength 块的长度
+ * @return             返回解码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ */
+vector<int> decodeHard(vector<double> block, int blockLength);
 
 /**
  * 根据消息长度计算目标块大小
@@ -51,17 +60,7 @@ void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLeng
  */
 int getCheckbitLengthByBlockLength(int blockLength);
 
-/**
- * 将字符数组转换为vector容器
- */
-vector<int> transCharArrayToIntVector(char* charArray, int arrayLenth);
-
-/**
- * 汉明码编码(返回值为范性为int的vector容器)
- */
-vector<int> encodeReturnVector(char message[], int msgLength);
-
-char* encode(char message[], int msgLength){
+vector<int> encode(vector<int> message, int msgLength){
 	//计算块的大小
 	int blockLength = getBlockLengthByMsgLength(msgLength);
 	//块大小的调试信息
@@ -81,7 +80,7 @@ char* encode(char message[], int msgLength){
 		printf("\n");
 	}
 	//产生临时编码块
-	char tempBlock[blockLength];
+	vector<int> tempBlock(blockLength, 0);
 	//当前的纠错位序号
 	int checkbitIndex = 0;
 	//当前的数据位序号
@@ -95,7 +94,7 @@ char* encode(char message[], int msgLength){
 			// 	tempBlock[i] = 
 			// }
 			//temp将纠错位标记为X
-			tempBlock[i] = 'X';
+			tempBlock[i] = 2;
 			//将纠错位序号调整至下一个
 			checkbitIndex++;
 		} else {
@@ -121,7 +120,7 @@ char* encode(char message[], int msgLength){
 	for (int i = 0; i < blockLength; ++i)
 	{
 		//判断当前位是否为纠错位
-		if (tempBlock[i] == 'X')
+		if (tempBlock[i] == 2)
 		{
 			//如果为纠错位，计算纠错位数据，配偶原则
 			//内层循环因子初始化，计算纠错位数据，从当前的纠错位开始，与之前的位无关
@@ -136,12 +135,12 @@ char* encode(char message[], int msgLength){
 			while(j < blockLength){
 				//纠错位计算的调试信息
 				if (TEST == 1){
-					printf("s %c 第%d位\n", tempBlock[j],j + 1);
+					printf("s %d 第%d位\n", tempBlock[j],j + 1);
 				}
 				//为了跳过分组中的第一位，对当前操作位进行判断是否位该组的第一位
 				if (j != i){
 					//若当前操作位不为当前组的第一位，进行累加计算
-					tempData = tempData + chartonumber(tempBlock[j]);
+					tempData = tempData + tempBlock[j];
 				}
 				//连续标记自加
 				nowNumber++;
@@ -160,9 +159,9 @@ char* encode(char message[], int msgLength){
 				printf("%d\n",tempData);
 			}
 			if ((tempData % 2) == 0){
-				tempBlock[i] = '0';
+				tempBlock[i] = 0;
 			} else {
-				tempBlock[i] = '1';
+				tempBlock[i] = 1;
 			}
 			//每次循环完成后，对一些每次循环需要用到的数据进行初始化
 			tempData = 0;
@@ -175,20 +174,12 @@ char* encode(char message[], int msgLength){
 	//临时编码块纠错位置标记的调试信息
 	if (TEST == 1)
 	{
-		printf("%s\n", tempBlock);
+		//printf("%s\n", tempBlock);
 	}
-	char *block = NULL;
-	//生成最终的编码块并返回
-	block = (char *) malloc(blockLength * sizeof(char));
-	if (block != NULL){
-		snprintf(block, sizeof(tempBlock) + 1, tempBlock);
-		return block;
-	} else {
-		return NULL;
-	}
+	return tempBlock;
 }
 
-char* decode(char block[], int blockLength){
+vector<int> decode(vector<int> block, int blockLength){
 	//计算纠错位位数
 	int checkbitLength = getCheckbitLengthByBlockLength(blockLength);
 	//计算纠错位位置
@@ -220,14 +211,14 @@ char* decode(char block[], int blockLength){
 	//判断纠错
 	if (target != -1){
 		//发生错误,进行纠错
-		if (block[target] == '1'){
-			block[target] = '0';
+		if (block[target] == 1){
+			block[target] = 0;
 		} else {
-			block[target] = '1';
+			block[target] = 1;
 		}
 	}
 	//去除纠错位解码
-	char tempMsg[blockLength - checkbitLength];
+	vector<int> tempMsg(blockLength - checkbitLength, 0);
 	int checkIndex = 0;
 	int msgIndex = 0;
 	for (int i = 0; i < blockLength; ++i)
@@ -241,14 +232,21 @@ char* decode(char block[], int blockLength){
 		}
 	}
 	//生成最终的编码块并返回
-	char *msg = NULL;
-	msg = (char *) malloc((blockLength - checkbitLength) * sizeof(char));
-	if (msg != NULL){
-		snprintf(msg, sizeof(tempMsg) + 1, tempMsg);
-		return msg;
-	} else {
-		return NULL;
+	return tempMsg;
+}
+
+vector<int> decodeHard(vector<double> block, int blockLength){
+	vector<int> newBlock(blockLength, 0);
+	for (int i = 0; i < blockLength; ++i)
+	{
+		if (fabs(block[i] - SIGNAL_ONE) <= fabs(block[i] - SIGNAL_ZERO)){
+			newBlock[i] = 1;
+		} else {
+			newBlock[i] = 0;
+		}
 	}
+	printVector(newBlock);
+	return decode(newBlock, blockLength);
 }
 
 int getBlockLengthByMsgLength(int msgLength){
@@ -274,18 +272,4 @@ int getCheckbitLengthByBlockLength(int blockLength){
 		}
 	}
 	return 0;
-}
-
-vector<int> transCharArrayToIntVector(char* charArray, int arrayLenth){
-	vector<int> v(arrayLenth, 0);
-	for (int i = 0; i < arrayLenth; ++i)
-	{
-		v[i] = chartonumber(charArray[i]);
-	}
-	free(charArray);
-	return v;
-}
-
-vector<int> encodeReturnVector(char message[], int msgLength){
-	return transCharArrayToIntVector(encode(message, msgLength), getBlockLengthByMsgLength(msgLength));
 }
