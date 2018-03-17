@@ -245,7 +245,9 @@ vector<int> decodeHard(vector<double> block, int blockLength){
 			newBlock[i] = 0;
 		}
 	}
-	printVector(newBlock);
+	if(TEST == 1){
+		printVector(newBlock);
+	}
 	return decode(newBlock, blockLength);
 }
 
