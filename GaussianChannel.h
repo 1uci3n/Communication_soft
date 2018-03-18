@@ -1,6 +1,8 @@
 #include<time.h>
 #include<math.h>
 #define limit	1e-100
+#define R 4/7
+#define Es 1
 #define _USE_MATH_DEFINES
 using namespace std;
 
@@ -31,5 +33,5 @@ vector<double> Gaussian_channel(vector<int> code,double n0)
 }
 
 double getN0BySNR(double SNR){
-	return 1 / (SNR * 4/7);
+	return Es / (SNR * R);
 }
