@@ -1,40 +1,51 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <map>
 
-#define chartonumber(x) (x-'0')
 #define MAX 1000000
 #define TEST 0
 #define SIGNAL_ZERO -1
 #define SIGNAL_ONE 1
 
+static std::vector<std::vector<int> > keySet;
 
 /**
  * 汉明码编码
  * 
- * @param  message   源消息(字符数组)
+ * @param  message   源消息
  * @param  msgLength 消息长度
- * @return           返回编码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ * @return           返回编码后的块
  */
-vector<int> encode(vector<int> message, int msgLength);
+std::vector<int> encode(std::vector<int> message, int msgLength);
 
 /**
  * 汉明码解码
  * 
- * @param  block       需要解码的块(字符数组)
+ * @param  block       需要解码的块
  * @param  blockLength 块的长度
- * @return             返回解码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ * @return             返回解码后的消息
  */
-vector<int> decode(vector<int> block, int blockLength);
+std::vector<int> decode(std::vector<int> block, int blockLength);
 
 /**
  * 汉明码解码(硬解码)
  * 
- * @param  block       需要解码的块(字符数组)
+ * @param  block       需要解码的块
  * @param  blockLength 块的长度
- * @return             返回解码后的字符数组的首地址(malloc)，注意复制后释放地址(free)
+ * @return             返回解码后的消息
  */
-vector<int> decodeHard(vector<double> block, int blockLength);
+std::vector<int> decodeHard(std::vector<double> block, int blockLength);
+
+/**
+ * 汉明码解码(最大似然度解码Maximum Likelihood Decodin)
+ * 
+ * @param  block       [description]
+ * @param  blockLength [description]
+ * @param  encodeMap   [description]
+ * @return             [description]
+ */
+std::vector<int> decodeMLD(std::vector<double> block, int blockLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
 
 /**
  * 根据消息长度计算目标块大小
@@ -60,7 +71,29 @@ void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLeng
  */
 int getCheckbitLengthByBlockLength(int blockLength);
 
-vector<int> encode(vector<int> message, int msgLength){
+/**
+ * [getEncodeMapByMsgLength description]
+ * @param  msgLength [description]
+ * @return           [description]
+ */
+std::map<std::vector<int>, std::vector<int> > getEncodeMapByMsgLength(int msgLength);
+
+/**
+ * [decimalIntToBinaryVector description]
+ * @param  decimal   [description]
+ * @param  msgLength [description]
+ * @return           [description]
+ */
+std::vector<int> decimalIntToBinaryVector(int decimal,int msgLength);
+/**
+ * [getEulerDistance description]
+ * @param  block1 [description]
+ * @param  block2 [description]
+ * @return        [description]
+ */
+double getEulerDistance(std::vector<double> block1,std::vector<int> block2);
+
+std::vector<int> encode(std::vector<int> message, int msgLength){
 	//计算块的大小
 	int blockLength = getBlockLengthByMsgLength(msgLength);
 	//块大小的调试信息
@@ -80,7 +113,7 @@ vector<int> encode(vector<int> message, int msgLength){
 		printf("\n");
 	}
 	//产生临时编码块
-	vector<int> tempBlock(blockLength, 0);
+	std::vector<int> tempBlock(blockLength, 0);
 	//当前的纠错位序号
 	int checkbitIndex = 0;
 	//当前的数据位序号
@@ -179,7 +212,7 @@ vector<int> encode(vector<int> message, int msgLength){
 	return tempBlock;
 }
 
-vector<int> decode(vector<int> block, int blockLength){
+std::vector<int> decode(std::vector<int> block, int blockLength){
 	//计算纠错位位数
 	int checkbitLength = getCheckbitLengthByBlockLength(blockLength);
 	//计算纠错位位置
@@ -196,7 +229,7 @@ vector<int> decode(vector<int> block, int blockLength){
 	{
 		for (int j = i; j < blockLength; ++j)
 		{
-			result[i] += chartonumber(block[i]);
+			result[i] += block[i];
 			//连续计数器计数
 			count ++;
 			if (count >= checkbitPosition[i] + 1){
@@ -218,7 +251,7 @@ vector<int> decode(vector<int> block, int blockLength){
 		}
 	}
 	//去除纠错位解码
-	vector<int> tempMsg(blockLength - checkbitLength, 0);
+	std::vector<int> tempMsg(blockLength - checkbitLength, 0);
 	int checkIndex = 0;
 	int msgIndex = 0;
 	for (int i = 0; i < blockLength; ++i)
@@ -235,8 +268,8 @@ vector<int> decode(vector<int> block, int blockLength){
 	return tempMsg;
 }
 
-vector<int> decodeHard(vector<double> block, int blockLength){
-	vector<int> newBlock(blockLength, 0);
+std::vector<int> decodeHard(std::vector<double> block, int blockLength){
+	std::vector<int> newBlock(blockLength, 0);
 	for (int i = 0; i < blockLength; ++i)
 	{
 		if (fabs(block[i] - SIGNAL_ONE) <= fabs(block[i] - SIGNAL_ZERO)){
@@ -249,6 +282,24 @@ vector<int> decodeHard(vector<double> block, int blockLength){
 		printVector(newBlock);
 	}
 	return decode(newBlock, blockLength);
+}
+
+
+std::vector<int> decodeMLD(std::vector<double> block, int blockLength, std::map<std::vector<int>, std::vector<int> > encodeMap){
+	double dis;
+	double minDis;
+	std::vector<int> key;
+	minDis = getEulerDistance(block, keySet[0]);
+	key = keySet[0];
+	for (int i = 1; i < pow(2, blockLength); ++i)
+	{
+		dis = getEulerDistance(block, keySet[i]);
+		if(dis < minDis){
+			minDis = dis;
+			key = keySet[i];
+		}
+	}
+	return encodeMap.at(key);
 }
 
 int getBlockLengthByMsgLength(int msgLength){
@@ -274,4 +325,42 @@ int getCheckbitLengthByBlockLength(int blockLength){
 		}
 	}
 	return 0;
+}
+
+std::map<std::vector<int>, std::vector<int> > getEncodeMapByMsgLength(int msgLength){
+	std::map<std::vector<int>, std::vector<int> > encodeMap;
+	std::vector<int> msg;
+	std::vector<int> block;
+	std::vector<std::vector <int> >::iterator iter=keySet.end();
+	for (int i = 0; i < pow(2, msgLength); ++i)
+	{
+		msg = decimalIntToBinaryVector(i, msgLength);
+		block = encode(msg, msgLength);
+		keySet.insert(iter, block);
+		iter = keySet.end();
+		printVector(keySet[i]);
+		encodeMap.insert(std::pair<std::vector<int>, std::vector<int> >(block, msg));
+	}
+	return encodeMap;
+}
+
+std::vector<int> decimalIntToBinaryVector(int decimal,int msgLength){
+	std::vector<int> binary(msgLength, 0);
+	int remain = decimal;
+	for (int i = msgLength - 1; i >= 0; --i)
+	{
+		binary[msgLength - i - 1] = remain / pow(2, i);
+		remain = remain - (binary[msgLength - i - 1] * pow(2, i));
+	}
+	return binary;
+}
+
+
+double getEulerDistance(std::vector<double> block1,std::vector<int> block2){
+	double result;
+	for (int i = 0; i < block1.size(); ++i)
+	{
+		result += fabs(block1[i] - block2[i]);
+	}
+	return result;
 }
