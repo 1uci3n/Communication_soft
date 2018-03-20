@@ -1,13 +1,16 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
-#include<math.h>
-int* getRandomIntArray(int length, int unitLength){
-	int array[lenght];
-	srand(time(NULL));
-	int randomTool = pow(10, unitLength);
-	for(int i = 0; i < length; i++){
-		array[i] = rand() % (pow(10, randomTool);
-	}
-	return array;
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+#include <vector>
+
+std::vector<int> getRandomMsg(int msgLength){
+	std::vector<int> msg;
+	//srand(time(NULL));
+	int intMsg = rand() % ((int) pow(2, msgLength) - 1);
+	msg = decimalIntToBinaryVector(intMsg, msgLength);
+	return msg;
 }
+
+
+
