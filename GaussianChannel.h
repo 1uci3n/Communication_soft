@@ -35,3 +35,7 @@ vector<double> Gaussian_channel(vector<int> code,double n0)
 double getN0BySNR(double SNR){
 	return Es / (SNR * R);
 }
+
+double getN0ByDbSNR(double DbSNR){
+	return getN0BySNR(pow(10,DbSNR/10));
+}
