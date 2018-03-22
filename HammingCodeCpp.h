@@ -9,6 +9,7 @@
 #define SIGNAL_ONE 1
 
 static std::vector<std::vector<int> > keySet;
+static std::map<std::vector<int>, std::vector<int> > encodeMap;
 
 /**
  * 汉明码编码
@@ -42,7 +43,6 @@ std::vector<int> decodeHard(std::vector<double> block, int blockLength);
  * 
  * @param  block       [description]
  * @param  blockLength [description]
- * @param  encodeMap   [description]
  * @return             [description]
  */
 std::vector<int> decodeMLD(std::vector<double> block, int blockLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
@@ -72,11 +72,11 @@ void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLeng
 int getCheckbitLengthByBlockLength(int blockLength);
 
 /**
- * [getEncodeMapByMsgLength description]
+ * [setEncodeMapByMsgLength description]
  * @param  msgLength [description]
  * @return           [description]
  */
-std::map<std::vector<int>, std::vector<int> > getEncodeMapByMsgLength(int msgLength);
+void setEncodeMapByMsgLength(int msgLength);
 
 /**
  * [decimalIntToBinaryVector description]
@@ -285,7 +285,7 @@ std::vector<int> decodeHard(std::vector<double> block, int blockLength){
 }
 
 
-std::vector<int> decodeMLD(std::vector<double> block, int blockLength, std::map<std::vector<int>, std::vector<int> > encodeMap){
+std::vector<int> decodeMLD(std::vector<double> block, int blockLength){
 	double dis;
 	double minDis;
 	std::vector<int> key;
@@ -327,8 +327,7 @@ int getCheckbitLengthByBlockLength(int blockLength){
 	return 0;
 }
 
-std::map<std::vector<int>, std::vector<int> > getEncodeMapByMsgLength(int msgLength){
-	std::map<std::vector<int>, std::vector<int> > encodeMap;
+void setEncodeMapByMsgLength(int msgLength){
 	std::vector<int> msg;
 	std::vector<int> block;
 	std::vector<std::vector <int> >::iterator iter=keySet.end();
@@ -341,7 +340,6 @@ std::map<std::vector<int>, std::vector<int> > getEncodeMapByMsgLength(int msgLen
 		printVector(keySet[i]);
 		encodeMap.insert(std::pair<std::vector<int>, std::vector<int> >(block, msg));
 	}
-	return encodeMap;
 }
 
 std::vector<int> decimalIntToBinaryVector(int decimal,int msgLength){
