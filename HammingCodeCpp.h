@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <map>
+#include <iostream>
+#include "VectorTools.h"
 
 #define MAX 1000000
 #define TEST 0
@@ -337,7 +339,7 @@ void setEncodeMapByMsgLength(int msgLength){
 		block = encode(msg, msgLength);
 		keySet.insert(iter, block);
 		iter = keySet.end();
-		printVector(keySet[i]);
+		//printVector(keySet[i]);
 		encodeMap.insert(std::pair<std::vector<int>, std::vector<int> >(block, msg));
 	}
 }
