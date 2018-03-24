@@ -18,7 +18,12 @@ bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> k
 	for (int i = 0; i < keySet.size(); ++i)
 	{
 		key = keySet[i];
-		fout << key << "\t" << map[key][0] << "\t" << map[key][1] <<"\n";
+		fout << key << "\t";
+		for (int j = 0; j < map[key].size(); ++j)
+		{
+			fout << map[key][j] << "\t";
+		}
+		fout <<"\n";
 	}
 	fout.close();
 	return true;
