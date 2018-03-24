@@ -7,8 +7,8 @@
 
 #define MAX 1000000
 #define TEST 0
-#define SIGNAL_ZERO -1
-#define SIGNAL_ONE 1
+#define SIGNAL_ZERO 1
+#define SIGNAL_ONE -1
 
 static std::vector<std::vector<int> > keySet;
 static std::map<std::vector<int>, std::vector<int> > encodeMap;
@@ -94,6 +94,13 @@ std::vector<int> decimalIntToBinaryVector(int decimal,int msgLength);
  * @return        [description]
  */
 double getEulerDistance(std::vector<double> block1,std::vector<int> block2);
+
+/**
+ * [transSymbol description]
+ * @param  originBlock [description]
+ * @return             [description]
+ */
+std::vector<int> transSymbol(std::vector<int> originBlock);
 
 std::vector<int> encode(std::vector<int> message, int msgLength){
 	//计算块的大小
@@ -337,6 +344,7 @@ void setEncodeMapByMsgLength(int msgLength){
 	{
 		msg = decimalIntToBinaryVector(i, msgLength);
 		block = encode(msg, msgLength);
+		block = transSymbol(block);
 		keySet.insert(iter, block);
 		iter = keySet.end();
 		//printVector(keySet[i]);
@@ -363,4 +371,17 @@ double getEulerDistance(std::vector<double> block1,std::vector<int> block2){
 		result += fabs(block1[i] - block2[i]);
 	}
 	return result;
+}
+
+std::vector<int> transSymbol(std::vector<int> block){
+	for (int i = 0; i < block.size(); ++i)
+	{
+		if (block[i] == 1)
+		{
+			block[i] = SIGNAL_ONE;
+		} else {
+			block[i] = SIGNAL_ZERO;
+		}
+	}
+	return block;
 }
