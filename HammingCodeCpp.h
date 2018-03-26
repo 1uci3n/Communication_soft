@@ -231,7 +231,7 @@ std::vector<int> decode(std::vector<int> block, int blockLength){
 	//每组校验的结果数组
 	int result[checkbitLength];
 	//最终结果的储存器
-	int target;
+	int target = 0;
 	//连续计数器
 	int count = 0;
 	for (int i = 0; i < checkbitLength; ++i)
