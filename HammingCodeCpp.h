@@ -229,7 +229,7 @@ std::vector<int> decode(std::vector<int> block, int blockLength){
 	getCheckbitPositionByCheckbitLength(checkbitPosition, checkbitLength);
 	//进行纠错校验
 	//每组校验的结果数组
-	int result[checkbitLength];
+	int result[checkbitLength] = {0};
 	//最终结果的储存器
 	int target = 0;
 	//连续计数器
