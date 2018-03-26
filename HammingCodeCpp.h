@@ -26,10 +26,9 @@ std::vector<int> encode(std::vector<int> message, int msgLength);
  * 汉明码解码
  * 
  * @param  block       需要解码的块
- * @param  blockLength 块的长度
  * @return             返回解码后的消息
  */
-std::vector<int> decode(std::vector<int> block, int blockLength);
+std::vector<int> decode(std::vector<int> block);
 
 /**
  * 汉明码解码(硬解码)
@@ -47,7 +46,7 @@ std::vector<int> decodeHard(std::vector<double> block, int blockLength);
  * @param  blockLength [description]
  * @return             [description]
  */
-std::vector<int> decodeMLD(std::vector<double> block, int blockLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
+std::vector<int> decodeMLD(std::vector<double> block, int msgLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
 
 /**
  * 根据消息长度计算目标块大小
@@ -221,7 +220,8 @@ std::vector<int> encode(std::vector<int> message, int msgLength){
 	return tempBlock;
 }
 
-std::vector<int> decode(std::vector<int> block, int blockLength){
+std::vector<int> decode(std::vector<int> block){
+	int blockLength = block.size();
 	//计算纠错位位数
 	int checkbitLength = getCheckbitLengthByBlockLength(blockLength);
 	//计算纠错位位置
@@ -229,13 +229,14 @@ std::vector<int> decode(std::vector<int> block, int blockLength){
 	getCheckbitPositionByCheckbitLength(checkbitPosition, checkbitLength);
 	//进行纠错校验
 	//每组校验的结果数组
-	int result[checkbitLength] = {0};
+	int result[checkbitLength];
 	//最终结果的储存器
 	int target = 0;
 	//连续计数器
 	int count = 0;
 	for (int i = 0; i < checkbitLength; ++i)
 	{
+		result[i] = 0;
 		for (int j = i; j < blockLength; ++j)
 		{
 			result[i] += block[i];
@@ -290,17 +291,17 @@ std::vector<int> decodeHard(std::vector<double> block, int blockLength){
 	if(TEST == 1){
 		printVector(newBlock);
 	}
-	return decode(newBlock, blockLength);
+	return decode(newBlock);
 }
 
 
-std::vector<int> decodeMLD(std::vector<double> block, int blockLength){
+std::vector<int> decodeMLD(std::vector<double> block, int msgLength){
 	double dis;
 	double minDis;
 	std::vector<int> key;
 	minDis = getEulerDistance(block, keySet[0]);
 	key = keySet[0];
-	for (int i = 1; i < pow(2, blockLength); ++i)
+	for (int i = 1; i < pow(2, msgLength); ++i)
 	{
 		dis = getEulerDistance(block, keySet[i]);
 		if(dis < minDis){
