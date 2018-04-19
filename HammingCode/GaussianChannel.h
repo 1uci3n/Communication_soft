@@ -14,7 +14,7 @@ vector<double> Gaussian_channel(vector<int> code,double n0)
 
 	vector<double> Gaussuanword(code.size(),0);
 	
-	for(i= 0;i<code.size();i++)
+	for(i= 0; i<code.size(); ++i)
 	{
 		u0 = (double)(rand() + 1) / ((double)RAND_MAX + 2);
 		u1 = (double)(rand() + 1) / ((double)RAND_MAX + 2);

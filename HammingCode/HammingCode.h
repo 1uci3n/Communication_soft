@@ -62,7 +62,7 @@ char* encode(char message[], int msgLength){
 	getCheckbitPositionByCheckbitLength(checkbitPosition, checkbitLength);
 	//纠错位位置的调试信息
 	if (TEST == 1){
-		for (int i = 0; i < checkbitLength; i++){
+		for (int i = 0; i < checkbitLength; ++i){
 			printf("%d ", checkbitPosition[i]);
 		}
 		printf("\n");
@@ -78,7 +78,7 @@ char* encode(char message[], int msgLength){
 		//判断当前位是否为纠错位
 		if (i == checkbitPosition[checkbitIndex]){
 			// //是纠错位,计算纠错位的数据
-			// for(int j = checkbitPosition[checkbitIndex]; j < blockLength; j++){
+			// for(int j = checkbitPosition[checkbitIndex]; j < blockLength; ++j){
 			// 	tempBlock[i] = 
 			// }
 			//temp将纠错位标记为X
