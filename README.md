@@ -1,5 +1,5 @@
 # Communication_soft
-This is the repository that I used to recover the simulation programs I wrote during the master study on coding theory learning.
+This is the repository that I'm using to recover the simulation programs I wrote during my Master's Program on coding theory learning.
 
 ## INDEX
 - Hamming Code 
