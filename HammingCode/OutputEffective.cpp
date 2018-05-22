@@ -1,3 +1,9 @@
+/*
+* @Author: 1uci3n
+* @Date:   2018-04-25 23:40:28
+* @Last Modified by:   1uci3n
+* @Last Modified time: 2018-05-21 12:59:58
+*/
 #include <map>
 #include <vector>
 #include "HammingCodeCpp.h"
@@ -18,10 +24,11 @@
 // #define S_N_R 6;
 
 /**
- * [compareBolckBit description]
- * @param  block1 [description]
- * @param  block2 [description]
- * @return        [description]
+ * compare two Bolck's bit
+ * 
+ * @param  block1 the one block
+ * @param  block2 another block
+ * @return        the count of different bit's
  */
 int compareBolckBit(std::vector<int> block1, std::vector<int> block2);
 

@@ -14,53 +14,53 @@ static std::vector<std::vector<int> > keySet;
 static std::map<std::vector<int>, std::vector<int> > encodeMap;
 
 /**
- * 汉明码编码
+ * 汉明码编码(hamming encode function)
  * 
- * @param  message   源消息
- * @param  msgLength 消息长度
- * @return           返回编码后的块
+ * @param  message   源消息(source message)
+ * @param  msgLength 消息长度(message's length)
+ * @return           返回编码后的块(the code block after encode)
  */
 std::vector<int> encode(std::vector<int> message, int msgLength);
 
 /**
- * 汉明码解码
+ * 汉明码解码(hamming decode function)
  * 
- * @param  block       需要解码的块
- * @return             返回解码后的消息
+ * @param  block       需要解码的块(the block which need decode)
+ * @return             返回解码后的消息(the block after decode)
  */
 std::vector<int> decode(std::vector<int> block);
 
 /**
- * 汉明码解码(硬解码)
+ * 汉明码解码(硬解码)(hamming hard decode function)
  * 
- * @param  block       需要解码的块
- * @param  blockLength 块的长度
- * @return             返回解码后的消息
+ * @param  block       需要解码的块(the block which need decode)
+ * @param  blockLength 块的长度(the length of block)
+ * @return             返回解码后的消息(the block after decode)
  */
 std::vector<int> decodeHard(std::vector<double> block, int blockLength);
 
 /**
- * 汉明码解码(最大似然度解码Maximum Likelihood Decodin)
+ * 汉明码解码(最大似然度解码Maximum Likelihood Decode)
  * 
- * @param  block       [description]
- * @param  blockLength [description]
- * @return             [description]
+ * @param  block       需要解码的块(the block which need decode)
+ * @param  blockLength 块的长度(the length of block)
+ * @return             返回解码后的消息(the block after decode)
  */
 std::vector<int> decodeMLD(std::vector<double> block, int msgLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
 
 /**
- * 根据消息长度计算目标块大小
+ * 根据消息长度计算目标块大小(Calculate target block size based on message length)
  * 
- * @param  msgLength 原消息大小
- * @return           返回目标块大小
+ * @param  msgLength 原消息大小(message's length)
+ * @return           返回目标块大小(the size of target block)
  */
 int getBlockLengthByMsgLength(int msgLength);
 
 /**
- * 根据纠错位位数计算纠错位位置
+ * 根据纠错位位数计算纠错位位置(Calculate the error correction bit position based on the number of error correction bits)
  * 
- * @param checkbitPosition 用来保存纠错位的数组
- * @param checkbitLength   纠错位位数
+ * @param checkbitPosition 用来保存纠错位的数组(the array which hold error correction bits)
+ * @param checkbitLength   纠错位位数(the number of error correction bits)
  */
 void getCheckbitPositionByCheckbitLength(int *checkbitPosition, int checkbitLength);
 
