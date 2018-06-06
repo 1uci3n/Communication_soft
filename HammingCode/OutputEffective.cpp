@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-04-25 23:40:28
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-05-21 12:59:58
+* @Last Modified time: 2018-06-06 17:22:04
 */
 #include <map>
 #include <vector>
@@ -108,7 +108,7 @@ int main(int argc, char const *argv[])
 		keySet.insert(keySet.end(), snr);
 	}
 	//输出测试结果至文件
-	char fileName[] = "data.txt";
+	char fileName[] = "result.dat";
 	outputMap(resultMap, keySet, fileName);
 	return 0;
 }
