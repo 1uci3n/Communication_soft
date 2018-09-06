@@ -1,10 +1,13 @@
 #
-#Makefile
+#makefile
 #
 CC	=		g++			# コンパイラ
 
 SOURCES	=	SumproductTools.cpp		\
 			Sumproduct.cpp			\
+			HammingCode.cpp			\
+			VectorTools.cpp			\
+			GaussianChannel2nd.cpp	\
 			TestCode.cpp
 
 OBJECTS	=	$(SOURCES:.c=.o)	# [.obj] file
