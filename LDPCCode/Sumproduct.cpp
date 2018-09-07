@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-06 15:38:57
+* @Last Modified time: 2018-09-06 18:19:40
 */
 #include "LDPCCode.h"
 
@@ -88,24 +88,38 @@ void checkNodesUpdate(){
 	vector<int> keyForJI;
 	vector<int> keyForIJ;
 	map<vector<int>, double>::iterator itForJIMap;
+	double totalProduct = 1;
+	double tempResult;
 	for (int i = 0; i < sPCMatrix.size(); ++i)
 	{
 		for (int j = 0; j < sPCMatrix[0].size(); ++j)
 		{
 			if (sPCMatrix[i][j] == 1)
 			{
-				itForJIMap = lJI.begin();
-				while(itForJIMap != lJI.end())
+				// itForJIMap = lJI.begin();
+				// while(itForJIMap != lJI.end())
+				// {
+				// 	//it->first;
+				// 	itForJIMap -> second;
+				// 	totalProduct *= tanh();
+				// 	itForJIMap++;
+				// }
+				for (int k = 0; k < sPCMatrix[0].size; ++k)
 				{
-					//it->first;
-					itForJIMap -> second;
-					totalProduct *= tanh();
-					itForJIMap++;
+					keyForJI.insert(keyForIJ.end(), k);
+					keyForJI.insert(keyForIJ.end(), i);
+					totalProduct *= tanh(lJI[keyForJI] / 2);
+					keyForJI.clear();
 				}
-				keyForIJ.insert(keyForIJ.end(), j);
+				keyForJI.insert(keyForIJ.end(), j);
+				keyForJI.insert(keyForIJ.end(), i);
+				totalProduct /= tanh(lJI[keyForJI] / 2);
+				tempResult = 
 				keyForIJ.insert(keyForIJ.end(), i);
-				lIJ[keyForIJ] = lJ[i];
+				keyForIJ.insert(keyForIJ.end(), j);
+				lIJ[keyForIJ] = tempResult;
 				keyForIJ.clear();
+				totalProduct = 1;
 			}
 		}
 	}
