@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-06 18:19:40
+* @Last Modified time: 2018-09-08 03:18:26
 */
 #include "LDPCCode.h"
 
@@ -40,9 +40,8 @@ void sPrint(){
  */
 vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > parityCheckMatrix, double sigmaSquare){
 	sPCMatrix = parityCheckMatrix;
-	cout << "before ini" << endl;
 	initialization(receivedBlock, sigmaSquare);
-	// codeNodesUpdate();
+	checkNodesUpdate();
 	// variableNodesUpdate();
 	vector<int> result;
 	return result;
@@ -53,17 +52,13 @@ vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > pari
  * @param receivedBlock [description]
  */
 void initialization(vector<double> receivedBlock, double sigmaSquare){
-	cout << "before 1" << endl;
 	//1
 	vector<double>::iterator iter = lJ.end();
-	cout << "after iter " << endl;
 	for (int i = 0; i < receivedBlock.size(); ++i)
 	{
-		cout << "first loop " << endl;
 		lJ.insert(iter, calcuBIAWGNChannelLLR(receivedBlock[i], sigmaSquare));
 		iter = lJ.end();
 	}
-	cout << "before 2" << endl;
 	//2
 	vector<int> keyForJI;
 	for (int i = 0; i < sPCMatrix.size(); ++i)
@@ -79,15 +74,15 @@ void initialization(vector<double> receivedBlock, double sigmaSquare){
 			}
 		}
 	}
-	keyForJI.insert(keyForJI.end(), 2);
-	keyForJI.insert(keyForJI.end(), 1);
-	cout << lJI[keyForJI] << endl;
+	// keyForJI.insert(keyForJI.end(), 2);
+	// keyForJI.insert(keyForJI.end(), 1);
+	// cout << "initialization" << lJI[keyForJI] << endl;
 }
 
 void checkNodesUpdate(){
 	vector<int> keyForJI;
 	vector<int> keyForIJ;
-	map<vector<int>, double>::iterator itForJIMap;
+	// map<vector<int>, double>::iterator itForJIMap;
 	double totalProduct = 1;
 	double tempResult;
 	for (int i = 0; i < sPCMatrix.size(); ++i)
@@ -104,17 +99,19 @@ void checkNodesUpdate(){
 				// 	totalProduct *= tanh();
 				// 	itForJIMap++;
 				// }
-				for (int k = 0; k < sPCMatrix[0].size; ++k)
+				for (int k = 0; k < sPCMatrix[0].size(); ++k)
 				{
-					keyForJI.insert(keyForIJ.end(), k);
-					keyForJI.insert(keyForIJ.end(), i);
-					totalProduct *= tanh(lJI[keyForJI] / 2);
+					keyForJI.insert(keyForJI.end(), k);
+					keyForJI.insert(keyForJI.end(), i);
+					if(lJI[keyForJI] != 0){
+						totalProduct *= tanh(lJI[keyForJI] / 2);
+					}
 					keyForJI.clear();
 				}
-				keyForJI.insert(keyForIJ.end(), j);
-				keyForJI.insert(keyForIJ.end(), i);
+				keyForJI.insert(keyForJI.end(), j);
+				keyForJI.insert(keyForJI.end(), i);
 				totalProduct /= tanh(lJI[keyForJI] / 2);
-				tempResult = 
+				tempResult = 2 * atanh(totalProduct);
 				keyForIJ.insert(keyForIJ.end(), i);
 				keyForIJ.insert(keyForIJ.end(), j);
 				lIJ[keyForIJ] = tempResult;
@@ -123,6 +120,9 @@ void checkNodesUpdate(){
 			}
 		}
 	}
+	// keyForIJ.insert(keyForIJ.end(), 2);
+	// keyForIJ.insert(keyForIJ.end(), 4);
+	// cout << "checkNodesUpdate" << lIJ[keyForIJ] << endl;
 }
 
 void variableNodesUpdate(){

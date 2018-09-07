@@ -12,6 +12,8 @@ void sPrint();
 
 void initialization(vector<double> receivedBlock, double sigmaSquare);
 
+void checkNodesUpdate();
+
 double calcuBIAWGNChannelLLR(double sigmaSquare, double input);
 
 //cNUpdate();
