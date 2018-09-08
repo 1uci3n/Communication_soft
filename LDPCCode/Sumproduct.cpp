@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 20:29:50
+* @Last Modified time: 2018-09-08 21:37:43
 */
 #include "LDPCCode.h"
 
@@ -45,21 +45,10 @@ vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > pari
 		lLRTotal();
 		loopCounter++;
 	} while(!stoppingCriteria(loopCounter));
-	cout << "解码结果:";
-	for (int i = 0; i < 7; ++i)
-	{
-		cout << vJ[i] << " ";
-	}
-	cout << endl;
-	cout << "循环次数" << loopCounter << endl;
-	vector<int> result;
+	vector<int> result = transMapToVector(vJ);
 	return result;
 }
 
-/**
- * initialization decoder(for BI-AWGN channel)
- * @param receivedBlock [description]
- */
 void initialization(vector<double> receivedBlock, double sigmaSquare){
 	//1
 	vector<double>::iterator iter = lJ.end();

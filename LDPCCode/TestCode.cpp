@@ -2,23 +2,11 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 13:00:51
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 20:33:39
+* @Last Modified time: 2018-09-08 21:36:16
 */
 #include "LDPCCode.h"
 
 using namespace std;
-
-vector<vector<int> > setCheckMatrix(){
-	vector<int> j(7);
-	vector<vector<int> > matrix;
-	j[0] = 1, j[1] = 0, j[2] = 1, j[3] = 0, j[4] = 1, j[5] = 0, j[6] = 1;
-	matrix.insert(matrix.end(), j);
-	j[0] = 1, j[1] = 1, j[2] = 1, j[3] = 0, j[4] = 0, j[5] = 1, j[6] = 1;
-	matrix.insert(matrix.end(), j);
-	j[0] = 0, j[1] = 0, j[2] = 0, j[3] = 1, j[4] = 1, j[5] = 1, j[6] = 1;
-	matrix.insert(matrix.end(), j);
-	return matrix;
-}
 
 int main(int argc, char const *argv[])
 {
@@ -39,9 +27,10 @@ int main(int argc, char const *argv[])
 	vector<double> yBlock = BPSK_AWGNC(xBlock, sigmaSquare);
 	cout << "接收码:";
 	printVector(yBlock);
-	vector<vector<int> > parityCheckMatrix = setCheckMatrix();
-	doSumproduct(yBlock, parityCheckMatrix, sigmaSquare);
-	// initialization(yBlock, sigmaSquare);
+	vector<vector<int> > parityCheckMatrix = setHammingCheckMatrix();
+	vector<int> result = doSumproduct(yBlock, parityCheckMatrix, sigmaSquare);
+	cout << "解码结果:";
+	printVector(result);
 	return 0;
 }
 

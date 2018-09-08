@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-22 12:31:47
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 20:06:53
+* @Last Modified time: 2018-09-08 21:34:26
 */
 #include "LDPCCode.h"
 
@@ -36,6 +36,23 @@ map<int, int> lTotalChanger(map<int, double> lTotal){
 	return result;
 }
 
-// vector analysisEdge(vector<vector<int> > parityCheckMatrix){
+vector<int> transMapToVector(map<int, int> map){
+	vector<int> result;
+	for (int i = 0; i < map.size(); ++i)
+	{
+		result.insert(result.end(), map[i]);
+	}
+	return result;
+}
 
-// }
+vector<vector<int> > setHammingCheckMatrix(){
+	vector<int> j(7);
+	vector<vector<int> > matrix;
+	j[0] = 1, j[1] = 0, j[2] = 1, j[3] = 0, j[4] = 1, j[5] = 0, j[6] = 1;
+	matrix.insert(matrix.end(), j);
+	j[0] = 1, j[1] = 1, j[2] = 1, j[3] = 0, j[4] = 0, j[5] = 1, j[6] = 1;
+	matrix.insert(matrix.end(), j);
+	j[0] = 0, j[1] = 0, j[2] = 0, j[3] = 1, j[4] = 1, j[5] = 1, j[6] = 1;
+	matrix.insert(matrix.end(), j);
+	return matrix;
+}

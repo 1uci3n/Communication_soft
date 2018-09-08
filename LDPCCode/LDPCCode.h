@@ -10,6 +10,11 @@ using namespace std;
 
 vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > parityCheckMatrix, double sigmaSquare);
 
+/**
+ * initialization decoder(for BI-AWGN channel)
+ * @param receivedBlock [description]
+ * @param sigmaSquare   [description]
+ */
 void initialization(vector<double> receivedBlock, double sigmaSquare);
 
 void checkNodesUpdate();
@@ -25,6 +30,10 @@ bool stoppingCriteria(int loopCounter);
 double calcuBIAWGNChannelLLR(double sigmaSquare, double input);
 
 map<int, int> lTotalChanger(map<int, double> lTotal);
+
+vector<int> transMapToVector(map<int, int> map);
+
+vector<vector<int> > setHammingCheckMatrix();
 
 //cNUpdate();
 
