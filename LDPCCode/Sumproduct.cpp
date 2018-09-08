@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 21:37:43
+* @Last Modified time: 2018-09-08 23:26:38
 */
 #include "LDPCCode.h"
 
@@ -46,6 +46,7 @@ vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > pari
 		loopCounter++;
 	} while(!stoppingCriteria(loopCounter));
 	vector<int> result = transMapToVector(vJ);
+	clearAllStatic();
 	return result;
 }
 
@@ -183,4 +184,16 @@ bool stoppingCriteria(int loopCounter){
 	} else {
 		return true;
 	}
+}
+
+void clearAllStatic(){
+	variableNodes.clear();
+	checkNodes.clear();
+	sPCMatrix.clear();
+	lJ.clear();
+	lJI.clear();
+	lIJ.clear();
+	lTotalJ.clear();
+	preLTotalJ.clear();
+	vJ.clear();
 }
