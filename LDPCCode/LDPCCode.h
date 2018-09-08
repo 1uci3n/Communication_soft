@@ -4,17 +4,27 @@
 #include <string>
 #include <math.h>
 
+#define MAX_LOOP_NUMBER 1000
+
 using namespace std;
 
 vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > parityCheckMatrix, double sigmaSquare);
-
-void sPrint();
 
 void initialization(vector<double> receivedBlock, double sigmaSquare);
 
 void checkNodesUpdate();
 
+void variableNodesUpdate();
+
+void lLRTotal();
+
+bool stoppingCriteria(int loopCounter);
+
+//SumproductTools.cpp
+
 double calcuBIAWGNChannelLLR(double sigmaSquare, double input);
+
+map<int, int> lTotalChanger(map<int, double> lTotal);
 
 //cNUpdate();
 

@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 03:18:26
+* @Last Modified time: 2018-09-08 20:29:50
 */
 #include "LDPCCode.h"
 
@@ -22,14 +22,11 @@ static vector<vector<int> > sPCMatrix;
 static vector<double> lJ;
 static map<vector<int>, double> lJI;
 static map<vector<int>, double> lIJ;
+//使用map方便插值与更新,vector需要区分插值和更新
+static map<int, double> lTotalJ;
+static map<int, double> preLTotalJ;
 
-
-
-void sPrint(){
-	variableNodes.insert(variableNodes.end(), 1);
-	cout << "succeed" << endl;
-	cout << variableNodes[0] << endl;
-}
+static map<int, int> vJ;
 
 /**
  * doSumproduct (for BI-AWGN channel)
@@ -41,8 +38,20 @@ void sPrint(){
 vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > parityCheckMatrix, double sigmaSquare){
 	sPCMatrix = parityCheckMatrix;
 	initialization(receivedBlock, sigmaSquare);
-	checkNodesUpdate();
-	// variableNodesUpdate();
+	int loopCounter = 0;
+	do{
+		checkNodesUpdate();
+		variableNodesUpdate();
+		lLRTotal();
+		loopCounter++;
+	} while(!stoppingCriteria(loopCounter));
+	cout << "解码结果:";
+	for (int i = 0; i < 7; ++i)
+	{
+		cout << vJ[i] << " ";
+	}
+	cout << endl;
+	cout << "循环次数" << loopCounter << endl;
 	vector<int> result;
 	return result;
 }
@@ -111,6 +120,7 @@ void checkNodesUpdate(){
 				keyForJI.insert(keyForJI.end(), j);
 				keyForJI.insert(keyForJI.end(), i);
 				totalProduct /= tanh(lJI[keyForJI] / 2);
+				keyForJI.clear();
 				tempResult = 2 * atanh(totalProduct);
 				keyForIJ.insert(keyForIJ.end(), i);
 				keyForIJ.insert(keyForIJ.end(), j);
@@ -120,15 +130,68 @@ void checkNodesUpdate(){
 			}
 		}
 	}
-	// keyForIJ.insert(keyForIJ.end(), 2);
-	// keyForIJ.insert(keyForIJ.end(), 4);
-	// cout << "checkNodesUpdate" << lIJ[keyForIJ] << endl;
 }
 
 void variableNodesUpdate(){
-
+	vector<int> keyForIJ;
+	vector<int> keyForJI;
+	double summation = 0;
+	double tempResult;
+	for (int j = 0; j < sPCMatrix[0].size(); ++j)
+	{
+		for (int i = 0; i < sPCMatrix.size(); ++i)
+		{
+			if (sPCMatrix[i][j] == 1)
+			{
+				for (int k = 0; k < sPCMatrix.size(); ++k)
+				{
+					keyForIJ.insert(keyForIJ.end(), k);
+					keyForIJ.insert(keyForIJ.end(), j);
+					summation += lIJ[keyForIJ];
+					keyForIJ.clear();
+				}
+				keyForIJ.insert(keyForIJ.end(), i);
+				keyForIJ.insert(keyForIJ.end(), j);
+				summation -= lIJ[keyForIJ];
+				keyForIJ.clear();
+				tempResult = lJ[j] + summation;
+				keyForJI.insert(keyForJI.end(), j);
+				keyForJI.insert(keyForJI.end(), i);
+				lJI[keyForJI] = tempResult;
+				keyForJI.clear();
+				summation = 0;
+			}
+		}
+	}
 }
 
 void lLRTotal(){
+	vector<int> keyForIJ;
+	double tempSummation = 0;
+	for (int j = 0; j < sPCMatrix[0].size(); ++j)
+	{
+		for (int i = 0; i < sPCMatrix.size(); ++i)
+		{
+			keyForIJ.insert(keyForIJ.end(), i);
+			keyForIJ.insert(keyForIJ.end(), j);
+			tempSummation += lIJ[keyForIJ];
+			keyForIJ.clear();
+		}
+		lTotalJ[j] = lJ[j] + tempSummation;
+		tempSummation = 0;
+	}
+}
 
+bool stoppingCriteria(int loopCounter){
+	if(loopCounter < MAX_LOOP_NUMBER){
+		vJ = lTotalChanger(lTotalJ);
+		if (lTotalJ == preLTotalJ)
+		{
+			return true;
+		}
+		preLTotalJ = lTotalJ;
+		return false;
+	} else {
+		return true;
+	}
 }
