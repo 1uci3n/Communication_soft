@@ -4,7 +4,7 @@
  */
 #include "LDPCCode.h"
 
-#define ENCODE_R 4/7
+#define ENCODE_R 4.0/7.0
 
 using namespace std;
 
@@ -40,6 +40,7 @@ vector<double> BPSK_AWGNC(vector<int> input, double variance)
 	for (vector<int>::size_type i = 0; i != input.size(); ++i)
 	{
 		double t = (double)(1 - 2 * input[i]) + sqrt(variance) * gaussrand();
+		// double t = (double)(1 - 2 * input[i]);
 		output.push_back(t);
 	}
 
