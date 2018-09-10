@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-21 12:37:19
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 23:26:38
+* @Last Modified time: 2018-09-09 17:28:03
 */
 #include "LDPCCode.h"
 
@@ -46,6 +46,7 @@ vector<int> doSumproduct(vector<double> receivedBlock, vector<vector<int> > pari
 		loopCounter++;
 	} while(!stoppingCriteria(loopCounter));
 	vector<int> result = transMapToVector(vJ);
+	result = cutBlockForHamming(result);
 	clearAllStatic();
 	return result;
 }
@@ -73,15 +74,11 @@ void initialization(vector<double> receivedBlock, double sigmaSquare){
 			}
 		}
 	}
-	// keyForJI.insert(keyForJI.end(), 2);
-	// keyForJI.insert(keyForJI.end(), 1);
-	// cout << "initialization" << lJI[keyForJI] << endl;
 }
 
 void checkNodesUpdate(){
 	vector<int> keyForJI;
 	vector<int> keyForIJ;
-	// map<vector<int>, double>::iterator itForJIMap;
 	double totalProduct = 1;
 	double tempResult;
 	for (int i = 0; i < sPCMatrix.size(); ++i)
@@ -90,14 +87,6 @@ void checkNodesUpdate(){
 		{
 			if (sPCMatrix[i][j] == 1)
 			{
-				// itForJIMap = lJI.begin();
-				// while(itForJIMap != lJI.end())
-				// {
-				// 	//it->first;
-				// 	itForJIMap -> second;
-				// 	totalProduct *= tanh();
-				// 	itForJIMap++;
-				// }
 				for (int k = 0; k < sPCMatrix[0].size(); ++k)
 				{
 					keyForJI.insert(keyForJI.end(), k);
