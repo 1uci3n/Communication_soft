@@ -2,7 +2,7 @@
 * @Author: 1uci3n
 * @Date:   2018-05-22 12:31:47
 * @Last Modified by:   1uci3n
-* @Last Modified time: 2018-09-08 21:34:26
+* @Last Modified time: 2018-09-09 17:35:04
 */
 #include "LDPCCode.h"
 
@@ -55,4 +55,13 @@ vector<vector<int> > setHammingCheckMatrix(){
 	j[0] = 0, j[1] = 0, j[2] = 0, j[3] = 1, j[4] = 1, j[5] = 1, j[6] = 1;
 	matrix.insert(matrix.end(), j);
 	return matrix;
+}
+
+vector<int> cutBlockForHamming(vector<int> longBlock){
+	vector<int> shortBlock(4);
+	shortBlock[0] = longBlock[2];
+	shortBlock[1] = longBlock[4];
+	shortBlock[2] = longBlock[5];
+	shortBlock[3] = longBlock[6];
+	return shortBlock;
 }
