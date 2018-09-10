@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <fstream>
 #include <math.h>
 
 #define MAX_LOOP_NUMBER 1000
@@ -25,6 +26,8 @@ void lLRTotal();
 
 bool stoppingCriteria(int loopCounter);
 
+void clearAllStatic();
+
 //SumproductTools.cpp
 
 double calcuBIAWGNChannelLLR(double sigmaSquare, double input);
@@ -35,13 +38,7 @@ vector<int> transMapToVector(map<int, int> map);
 
 vector<vector<int> > setHammingCheckMatrix();
 
-//cNUpdate();
-
-//VNUpdate();
-
-//LLRtotal();
-
-//StoppingCriteria();
+vector<int> cutBlockForHamming(vector<int> longBlock);
 //
 //
 //
@@ -78,7 +75,7 @@ std::vector<int> decodeHard(std::vector<double> block, int blockLength);
  * @param  blockLength 块的长度(the length of block)
  * @return             返回解码后的消息(the block after decode)
  */
-std::vector<int> decodeMLD(std::vector<double> block, int msgLength, std::map<std::vector<int>, std::vector<int> > encodeMap);
+std::vector<int> decodeMLD(std::vector<double> block, int msgLength);
 
 /**
  * 根据消息长度计算目标块大小(Calculate target block size based on message length)
@@ -146,3 +143,13 @@ double getVarianceBySNR(double SNR);
 double getVarianceBySNRdB(double SNRdB);
 
 vector<double> BPSK_AWGNC(vector<int> input, double variance);
+
+std::vector<int> getRandomMsg(int msgLength);
+
+bool outputMap(std::map<double, double> map, std::vector<double> keySet, char filename[]);
+
+bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> keySet, char filename[]);
+
+bool outputMap(std::map<double, double> map, std::vector<double> keySet);
+
+bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> keySet);

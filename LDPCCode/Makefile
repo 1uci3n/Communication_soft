@@ -8,7 +8,9 @@ SOURCES	=	SumproductTools.cpp		\
 			HammingCode.cpp			\
 			VectorTools.cpp			\
 			GaussianChannel2nd.cpp	\
-			TestCode.cpp
+			OutputEffective.cpp		\
+			RandomTools.cpp			\
+			OutputTools.cpp
 
 OBJECTS	=	$(SOURCES:.c=.o)	# [.obj] file
 TARGET	=	Test				# 実行フェイル名
