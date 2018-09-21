@@ -1,7 +1,7 @@
-#include "LDPCCode.h"
+#include "CommonFiles.h"
 
-bool outputMap(std::map<double, double> map, std::vector<double> keySet, char filename[]){
-	std::ofstream fout(filename);
+bool outputMap(map<double, double> map, vector<double> keySet, char filename[]){
+	ofstream fout(filename);
 	double key;
 	for (int i = 0; i < keySet.size(); ++i)
 	{
@@ -12,8 +12,8 @@ bool outputMap(std::map<double, double> map, std::vector<double> keySet, char fi
 	return true;
 }
 
-bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> keySet, char filename[]){
-	std::ofstream fout(filename);
+bool outputMap(map<double, vector<double> > map, vector<double> keySet, char filename[]){
+	ofstream fout(filename);
 	double key;
 	for (int i = 0; i < keySet.size(); ++i)
 	{
@@ -30,12 +30,12 @@ bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> k
 }
 
 
-bool outputMap(std::map<double, double> map, std::vector<double> keySet){
+bool outputMap(map<double, double> map, vector<double> keySet){
 	char filename[] = "temp.txt";
 	return outputMap(map, keySet, filename);
 }
 
-bool outputMap(std::map<double, std::vector<double> > map, std::vector<double> keySet){
+bool outputMap(map<double, vector<double> > map, vector<double> keySet){
 	char filename[] = "temp.txt";
 	return outputMap(map, keySet, filename);
 }

@@ -3,17 +3,18 @@
 #
 CC	=		g++			# コンパイラ
 
-SOURCES	=	SumproductTools.cpp		\
+SOURCES	=	../CommonFiles/RandomTools.cpp			\
+			../CommonFiles/OutputTools.cpp			\
+			../CommonFiles/VectorTools.cpp			\
+			../CommonFiles/NumberSystemTools.cpp	\
+			../CommonFiles/GaussianChannel2nd.cpp	\
+			SumproductTools.cpp		\
 			Sumproduct.cpp			\
 			HammingCode.cpp			\
-			VectorTools.cpp			\
-			GaussianChannel2nd.cpp	\
-			OutputEffective.cpp		\
-			RandomTools.cpp			\
-			OutputTools.cpp
+			OutputEffective.cpp
 
 OBJECTS	=	$(SOURCES:.c=.o)	# [.obj] file
-TARGET	=	Test				# 実行フェイル名
+TARGET	=	Test				# 実行ファイル名
 
 # 生成規則
 

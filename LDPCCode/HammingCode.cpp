@@ -264,18 +264,6 @@ void setEncodeMapByMsgLength(int msgLength){
 	}
 }
 
-std::vector<int> decimalIntToBinaryVector(int decimal,int msgLength){
-	std::vector<int> binary(msgLength, 0);
-	int remain = decimal;
-	for (int i = msgLength - 1; i >= 0; --i)
-	{
-		binary[msgLength - i - 1] = remain / pow(2, i);
-		remain = remain - (binary[msgLength - i - 1] * pow(2, i));
-	}
-	return binary;
-}
-
-
 double getEulerDistance(std::vector<double> block1,std::vector<int> block2){
 	double result;
 	for (int i = 0; i < block1.size(); ++i)

@@ -2,11 +2,9 @@
  * 0 1
  * 1 -1
  */
-#include "LDPCCode.h"
+#include "CommonFiles.h"
 
 #define ENCODE_R 4.0/7.0
-
-using namespace std;
 
 double gaussrand()
 {
