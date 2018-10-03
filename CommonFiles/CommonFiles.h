@@ -18,3 +18,8 @@ using namespace std;
  * @return           目标Vector(ターゲットベクター)
  */
 vector<int> decimalIntToBinaryVector(int decimal,int msgLength);
+
+//				VectorTools.cpp
+void printVector(vector<int> v);
+void printVector(vector<char> v);
+void printVector(vector<double> v);
