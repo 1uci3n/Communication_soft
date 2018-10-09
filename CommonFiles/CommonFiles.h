@@ -20,6 +20,19 @@ using namespace std;
 vector<int> decimalIntToBinaryVector(int decimal,int msgLength);
 
 //				VectorTools.cpp
+/**
+ * 直接打印vector类型的对象(ベクトル型のオブジェクトを直接プリントする)
+ * [printVector description]
+ * @param v 打印对象(ターゲット)
+ */
 void printVector(vector<int> v);
 void printVector(vector<char> v);
 void printVector(vector<double> v);
+
+//				OutputTools.cpp
+bool outputMap(map<double, double> map, vector<double> keySet, char filename[]);
+bool outputMap(map<double, vector<double> > map, vector<double> keySet, char filename[]);
+bool outputList(vector<vector <int> > list, char filename[]);
+bool outputMap(map<double, double> map, vector<double> keySet);
+bool outputMap(map<double, vector<double> > map, vector<double> keySet);
+bool outputList(vector<vector <int> > list);
